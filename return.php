@@ -21,7 +21,8 @@ $url = elgg_get_site_url() . 'mod/openid_client/return.php';
 $consumer->setReturnURL($url);
 $data = $consumer->completeAuthentication();
 if (!$data || !$data['openid_identifier']) {
-	// @todo handle error
+	register_error(elgg_echo('openid_client:error:bad_response'));
+	forward();
 }
 
 // does this user exist
@@ -48,7 +49,7 @@ if ($users) {
 	// register the new user
 	$result = openid_client_registration_page_handler($data);
 	if (!$result) {
-		register_error('openid_client:error:bad_register');
+		register_error(elgg_echo('openid_client:error:bad_register'));
 		forward();
 	}
 }

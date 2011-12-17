@@ -6,6 +6,7 @@
 class ElggOpenIDConsumer {
 
 	protected $provider;
+	protected $username;
 	protected $returnURL;
 
 	protected $store;
@@ -33,6 +34,15 @@ class ElggOpenIDConsumer {
 	 */
 	public function setProvider($provider) {
 		$this->provider = $provider;
+	}
+
+	/**
+	 * Set the OpenID username
+	 *
+	 * @param string $username
+	 */
+	public function setUsername($username) {
+		$this->username = $username;
 	}
 
 	/**
@@ -119,11 +129,39 @@ class ElggOpenIDConsumer {
 	 */
 	protected function getProviderURL() {
 		$url = null;
-		switch ($this->provider) {
+		$provider = $this->provider;
+		$username = $this->username;
+		switch ($provider) {
 			case 'google':
 				$url = 'https://www.google.com/accounts/o8/id';
 				break;
+			case 'yahoo':
+				$url = 'https://me.yahoo.com/';
+				break;
+			case 'blogger':
+				$url = "http://$username.blogspot.com/";
+				break;
+			case 'wordpress':
+				$url = "";
+				break;
+			case 'aol':
+				$url = "http://openid.aol.com/$username";
+				break;
+			case 'verisign':
+				$url = "http://username.pip.verisignlabs.com/";
+				break;
+			case 'myopenid':
+				$url = 'https://myopenid.com/';
+				break;
+			case 'myspace':
+				$url = 'https://api.myspace.com/openid';
+				break;
 			default:
+				$params = array(
+					'provider' => $provider,
+					'username' => $username,
+				);
+				$url = elgg_trigger_plugin_hook('set', 'openid_client:url', $params);
 				break;
 		}
 
@@ -199,7 +237,7 @@ class ElggOpenIDConsumer {
 		$data = $this->extractUserData($sreg, $ax);
 		$data['openid_identifier'] = $response->getDisplayIdentifier();
 
-		return data;
+		return $data;
 	}
 
 	/**
@@ -217,7 +255,7 @@ class ElggOpenIDConsumer {
 			$data['email'] = $sreg['email'];
 		}
 		if (isset($ax['http://axschema.org/contact/email'])) {
-			$data['email'] = $ax['http://axschema.org/contact/email'];
+			$data['email'] = $ax['http://axschema.org/contact/email'][0];
 		}
 
 		// display name
@@ -225,10 +263,10 @@ class ElggOpenIDConsumer {
 			$data['name'] = $sreg['fullname'];
 		}
 		if (isset($ax['http://axschema.org/namePerson/first'])) {
-			$data['name'] = $ax['http://axschema.org/namePerson/first'];
+			$data['name'] = $ax['http://axschema.org/namePerson/first'][0];
 		}
 		if (isset($ax['http://axschema.org/namePerson/last'])) {
-			$data['name'] .= ' ' . $ax['http://axschema.org/namePerson/last'];
+			$data['name'] .= ' ' . $ax['http://axschema.org/namePerson/last'][0];
 			$data['name'] = trim($data['name']);
 		}
 

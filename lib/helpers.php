@@ -43,7 +43,7 @@ function openid_client_prepare_registration_vars(array $data) {
 	if (isset($data['username'])) {
 		$vars['username'] = $data['username'];
 	} else if (isset($data['email'])) {
-		$vars['username'] = array_pop(explode('@', $data['email']));
+		$vars['username'] = array_shift(explode('@', $data['email']));
 	} else {
 		$vars['username'] = null;
 	}

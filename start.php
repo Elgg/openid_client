@@ -63,14 +63,14 @@ function openid_client_setup_menu($hook, $type, $menu, $params) {
 	$items = elgg_trigger_plugin_hook('register', 'openid_login', null, $items);
 
 	$priority = 100;
-	foreach ($items as $type => $servers) {
-		foreach ($servers as $server) {
-			$server_name = elgg_echo("openid_client:server:$server");
+	foreach ($items as $type => $providers) {
+		foreach ($providers as $provider) {
+			$provider_name = elgg_echo("openid_client:provider:$provider");
 			$menu[] = ElggMenuItem::factory(array(
-				'name' => $server,
+				'name' => $provider,
 				'text' => '<span></span>',
-				'title' => elgg_echo('openid_client:login:instructs', array($server_name)),
-				'href' => "action/openid_client/login?server=$server",
+				'title' => elgg_echo('openid_client:login:instructs', array($provider_name)),
+				'href' => "action/openid_client/login?provider=$provider",
 				'is_action' => true,
 				'section' => $type,
 				'priority' => $priority,
