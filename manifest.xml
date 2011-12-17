@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin_manifest>
-        <field key="author" value="Kevin Jardine" />
-        <field key="version" value="1.3" />
-        <field key="description" value="OpenID client plugin" />
-        <field key="website" value="http://www.elgg.org/" />
-        <field key="copyright" value="(C) Curverider 2008-2009" />
-        <field key="elgg_version" value="2009022701" />
+<plugin_manifest xmlns="http://www.elgg.org/plugin_manifest/1.8">
+	<name>OpenID Client</name>
+	<author>Core developers</author>
+	<version>1.8</version>
+	<description>OpenID consumer for Elgg. Enabled users log in using their credentials from sites like Google and Yahoo.</description>
+	<category>user</category>
+	<website>http://www.elgg.org/</website>
+	<copyright>Cash Costello 2011</copyright>
+	<license>GNU General Public License version 2</license>
+	<requires>
+		<type>elgg_release</type>
+		<version>1.8</version>
+	</requires>
+	<requires>
+		<type>plugin</type>
+		<name>openid_api</name>
+	</requires>
 </plugin_manifest>

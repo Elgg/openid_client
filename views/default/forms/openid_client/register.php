@@ -10,19 +10,19 @@
  * @uses $vars['name']
  */
 
-$username_label = '';
+$username_label = elgg_echo('username');
 $username_input = elgg_view('input/text', array(
 	'name' => 'username',
 	'value' => $vars['username'],
 ));
 
-$name_label = elgg_echo();
+$name_label = elgg_echo('name');
 $name_input = elgg_view('input/text', array(
 	'name' => 'name',
 	'value' => $vars['name'],
 ));
 
-$email_label = elgg_echo();
+$email_label = elgg_echo('email');
 $email_input = elgg_view('input/email', array(
 	'name' => 'email',
 	'value' => $vars['email'],

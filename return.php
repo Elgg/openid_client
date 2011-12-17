@@ -48,7 +48,7 @@ if ($users) {
 	// register the new user
 	$result = openid_client_registration_page_handler($data);
 	if (!$result) {
-		register_error();
+		register_error('openid_client:error:bad_register');
 		forward();
 	}
 }

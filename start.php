@@ -1,7 +1,9 @@
 <?php
 /**
  * Elgg OpenID client
- * 
+ *
+ * This is a rewrite of the OpenID client written by Kevin Jardine for
+ * Curverider Ltd for Elgg 1.0-1.7.
  */
 
 elgg_register_event_handler('init', 'system', 'openid_client_init');

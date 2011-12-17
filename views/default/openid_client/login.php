@@ -1,6 +1,6 @@
 <?php
 /**
- *
+ * OpenID client login choices
  */
 
 echo elgg_view('output/url', array(

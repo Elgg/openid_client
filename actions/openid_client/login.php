@@ -1,6 +1,6 @@
 <?php
 /**
- *
+ * OpenID client login action
  */
 
 elgg_load_library('openid_consumer');
