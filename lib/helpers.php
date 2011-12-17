@@ -17,12 +17,16 @@ function openid_client_registration_page_handler(array $data) {
 		return false;
 	}
 
-	$title = 'register';
+	$title = elgg_echo('openid_client:create');
 
 	$vars = openid_client_prepare_registration_vars($data);
 	$content = elgg_view('openid_client/register', $vars);
 
-	$body = elgg_view_layout('one_column', array('content' => $content));
+	$params = array(
+		'title' => $title,
+		'content' => $content,
+	);
+	$body = elgg_view_layout('one_column', $params);
 	echo elgg_view_page($title, $body);
 
 	return true;
@@ -49,7 +53,9 @@ function openid_client_prepare_registration_vars(array $data) {
 	}
 
 	// is the username available
-	$vars['is_username_available'] = true;
+	if ($vars['username']) {
+		$vars['is_username_available'] = openid_client_is_username_available($vars['username']);
+	}
 
 	// is the username valid
 	try {
@@ -62,5 +68,47 @@ function openid_client_prepare_registration_vars(array $data) {
 	$vars['email'] = elgg_extract('email', $data);
 	$vars['name'] = elgg_extract('name', $data);
 
+	if ($vars['email']) {
+		$vars['is_email_available'] = openid_client_is_email_available($vars['email']);
+	}
+
 	return $vars;
+}
+
+/**
+ * Is this username available?
+ *
+ * @param string $username The username
+ * @return bool 
+ */
+function openid_client_is_username_available($username) {
+	$db_prefix = elgg_get_config('dbprefix');
+	$username = sanitize_string($username);
+
+	$query = "SELECT count(*) AS total FROM {$db_prefix}users_entity WHERE username = '$username'";
+	$result = get_data_row($query);
+	if ($result->total == 0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+/**
+ * Is this email address available?
+ *
+ * @param string $email Email address
+ * @return bool
+ */
+function openid_client_is_email_available($email) {
+	$db_prefix = elgg_get_config('dbprefix');
+	$email = sanitize_string($email);
+
+	$query = "SELECT count(*) AS total FROM {$db_prefix}users_entity WHERE email = '$email'";
+	$result = get_data_row($query);
+	if ($result->total == 0) {
+		return true;
+	} else {
+		return false;
+	}
 }
