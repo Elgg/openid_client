@@ -15,7 +15,6 @@ elgg_load_library('openid_consumer');
 elgg_load_library('openid_client');
 
 // get user data from the response
-$store = new Auth_OpenID_FileStore('/tmp');
 $consumer = new ElggOpenIDConsumer($store);
 $url = elgg_get_site_url() . 'mod/openid_client/return.php';
 $consumer->setReturnURL($url);
