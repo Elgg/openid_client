@@ -26,7 +26,8 @@ function openid_client_init() {
 
 	elgg_register_event_handler('create', 'user', 'openid_client_set_subtype', 1);
 
-	//elgg_register_page_handler('openid_client', 'openid_client_page_handler');
+	// don't let OpenID users set their passwords
+	elgg_register_event_handler('pagesetup', 'system', 'openid_client_remove_email');
 }
 
 /**
@@ -83,21 +84,11 @@ function openid_client_setup_menu($hook, $type, $menu, $params) {
 }
 
 /**
- * OpenID client page handler
- *
- * @param type $page Array of URL segments
- * @return bool
+ * Remove the password view from the account settings form
  */
-function openid_client_page_handler($page) {
-
-	// this is test code for right now
-	elgg_load_library('openid_client');
-	openid_client_registration_page_handler(array(
-		'username' => 'john',
-		'email' => 'john@example.org',
-		'name' => 'John Doe',
-		'openid_identifier' => 'abcdefghijklmnopqrstuvwxyz',
-	));
-
-	return true;
+function openid_client_remove_email() {
+	$page_owner = elgg_get_page_owner_entity();
+	if ($page_owner && elgg_instanceof($page_owner, 'user', 'openid')) {
+		elgg_unextend_view('forms/account/settings', 'core/settings/account/password');
+	}
 }
