@@ -12,7 +12,10 @@ elgg_register_event_handler('init', 'system', 'openid_client_init');
  * OpenID client initialization
  */
 function openid_client_init() {
+	elgg_extend_view('css/elgg', 'openid_client/css');
+
 	elgg_extend_view('core/account/login_box', 'openid_client/login');
+	elgg_register_plugin_hook_handler('register', 'menu:openid_login', 'openid_client_setup_menu');
 	
 	$base = elgg_get_plugins_path() . 'openid_client/actions/openid_client';
 	elgg_register_action('openid_client/login', "$base/login.php", 'public');
@@ -23,7 +26,7 @@ function openid_client_init() {
 
 	elgg_register_event_handler('create', 'user', 'openid_client_set_subtype', 1);
 
-	elgg_register_page_handler('openid_client', 'openid_client_page_handler');
+	//elgg_register_page_handler('openid_client', 'openid_client_page_handler');
 }
 
 /**
@@ -40,6 +43,43 @@ function openid_client_set_subtype($event, $type, $user) {
 
 	$query = "UPDATE {$db_prefix}entities SET subtype = $subtype_id WHERE guid = $guid";
 	update_data($query);
+}
+
+/**
+ * Register login options
+ *
+ * @param string $hook
+ * @param string $type
+ * @param array  $menu
+ * @param array  $params
+ * @return array
+ */
+function openid_client_setup_menu($hook, $type, $menu, $params) {
+
+	$items = array(
+		'large' => array('google', 'yahoo'),
+		'small' => array('blogger', 'wordpress'),
+	);
+	$items = elgg_trigger_plugin_hook('register', 'openid_login', null, $items);
+
+	$priority = 100;
+	foreach ($items as $type => $servers) {
+		foreach ($servers as $server) {
+			$server_name = elgg_echo("openid_client:server:$server");
+			$menu[] = ElggMenuItem::factory(array(
+				'name' => $server,
+				'text' => '<span></span>',
+				'title' => elgg_echo('openid_client:login:instructs', array($server_name)),
+				'href' => "action/openid_client/login?server=$server",
+				'is_action' => true,
+				'section' => $type,
+				'priority' => $priority,
+			));
+			$priority += 10;
+		}
+	}
+
+	return $menu;
 }
 
 /**
