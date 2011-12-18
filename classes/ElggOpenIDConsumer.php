@@ -142,13 +142,17 @@ class ElggOpenIDConsumer {
 				$url = "http://$username.blogspot.com/";
 				break;
 			case 'wordpress':
-				$url = "";
+				// username is actually the blog name
+				$url = "http://$username.wordpress.com/";
+				break;
+			case 'livejournal':
+				$url = "http://$username.livejournal.com/";
 				break;
 			case 'aol':
-				$url = "http://openid.aol.com/$username";
+				$url = "https://openid.aol.com/";
 				break;
 			case 'verisign':
-				$url = "http://username.pip.verisignlabs.com/";
+				$url = "https://pip.verisignlabs.com/ ";
 				break;
 			case 'myopenid':
 				$url = 'https://myopenid.com/';
@@ -204,6 +208,8 @@ class ElggOpenIDConsumer {
 	 * the provider. If JavaScript is not enabled, a plain html form with a
 	 * continue button is displayed.
 	 *
+	 * This also supports OpenID 1.x but has not been tested as thoroughly.
+	 *
 	 * @return mixed
 	 */
 	protected function getForm() {
@@ -213,7 +219,13 @@ class ElggOpenIDConsumer {
 			return $html;
 		} else {
 			// OpenID 1.x
-			return false;
+			$redirect_url = $this->request->redirectURL(elgg_get_site_url(), $this->returnURL);
+
+			if (Auth_OpenID::isFailure($redirect_url)) {
+				return false;
+			} else {
+				forward($redirect_url);
+			}
 		}
 	}
 

@@ -13,6 +13,7 @@ elgg_register_event_handler('init', 'system', 'openid_client_init');
  */
 function openid_client_init() {
 	elgg_extend_view('css/elgg', 'openid_client/css');
+	elgg_extend_view('js/elgg', 'openid_client/js');
 
 	elgg_extend_view('core/account/login_box', 'openid_client/login');
 	elgg_register_plugin_hook_handler('register', 'menu:openid_login', 'openid_client_setup_menu');
@@ -58,24 +59,39 @@ function openid_client_set_subtype($event, $type, $user) {
 function openid_client_setup_menu($hook, $type, $menu, $params) {
 
 	$items = array(
-		'large' => array('google', 'yahoo'),
-		'small' => array('blogger', 'wordpress'),
+		'large' => array(
+			'google' => '',
+			'yahoo' => '',
+		),
+		'small' => array(
+			'blogger' => 'toggle',
+			'wordpress' => 'toggle',
+		),
 	);
 	$items = elgg_trigger_plugin_hook('register', 'openid_login', null, $items);
 
 	$priority = 100;
 	foreach ($items as $type => $providers) {
-		foreach ($providers as $provider) {
+		foreach ($providers as $provider => $toggle) {
 			$provider_name = elgg_echo("openid_client:provider:$provider");
-			$menu[] = ElggMenuItem::factory(array(
+
+			$options = array(
 				'name' => $provider,
 				'text' => '<span></span>',
 				'title' => elgg_echo('openid_client:login:instructs', array($provider_name)),
-				'href' => "action/openid_client/login?provider=$provider",
+				'href' => "action/openid_client/login?openid_provider=$provider",
 				'is_action' => true,
 				'section' => $type,
 				'priority' => $priority,
-			));
+			);
+
+			if ($toggle) {
+				$options['link_class'] = 'openid-client-toggle';
+				$options['rel'] = $provider;
+			}
+
+			$menu[] = ElggMenuItem::factory($options);
+
 			$priority += 10;
 		}
 	}

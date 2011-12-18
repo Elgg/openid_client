@@ -19,6 +19,7 @@ $english = array(
 	'openid_client:success:register' => 'Your account has been created.',
 	'openid_client:error:bad_register' => 'Unable to create an account. Please contact a site administrator.',
 	'openid_client:error:bad_response' => 'Bad response from the OpenID server',
+	'openid_client:error:no_html' => 'An error occurred trying to contact %s',
 	'openid_client:warning:username_not_available' => 'The username %s is not available. Please pick another.',
 	'openid_client:warning:username_valid' => 'The username %s is not valid as this site. Please pick another.',
 	'openid_client:warning:email_not_available' => 'The email address %s is not available. Please pick another.',
