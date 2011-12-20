@@ -29,6 +29,9 @@ function openid_client_init() {
 
 	// don't let OpenID users set their passwords
 	elgg_register_event_handler('pagesetup', 'system', 'openid_client_remove_email');
+
+	// the return to page needs to be public
+	elgg_register_plugin_hook_handler('public_pages', 'walled_garden', 'openid_client_public');
 }
 
 /**
@@ -107,4 +110,17 @@ function openid_client_remove_email() {
 	if ($page_owner && elgg_instanceof($page_owner, 'user', 'openid')) {
 		elgg_unextend_view('forms/account/settings', 'core/settings/account/password');
 	}
+}
+
+/**
+ * Add the return_to page to the list of public pages for walled garden
+ *
+ * @param string $hook Hook name
+ * @param string $type Hook type
+ * @param array  $pages Array of public pages
+ * @return array
+ */
+function openid_client_public($hook, $type, $pages) {
+	$pages[] = 'mod/openid_client/return.php';
+	return $pages;
 }
