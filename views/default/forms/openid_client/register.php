@@ -41,7 +41,7 @@ if (!$email_available) {
 $email_input = elgg_view('input/email', array(
 	'name' => 'email',
 	'value' => $vars['email'],
-	'disabled' => !$email_available,
+	'disabled' => $email_available,
 ));
 
 $openid_input = elgg_view('input/hidden', array(
