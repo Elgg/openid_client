@@ -113,7 +113,8 @@ function openid_client_remove_email() {
 }
 
 /**
- * Add the return_to page to the list of public pages for walled garden
+ * Add pages to the list of public pages for walled garden needed for OpenID
+ * transaction
  *
  * @param string $hook Hook name
  * @param string $type Hook type
@@ -121,6 +122,8 @@ function openid_client_remove_email() {
  * @return array
  */
 function openid_client_public($hook, $type, $pages) {
+	$pages[] = 'action/openid_client/login';
 	$pages[] = 'mod/openid_client/return.php';
+	$pages[] = 'action/openid_client/register';
 	return $pages;
 }
