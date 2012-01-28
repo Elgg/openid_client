@@ -25,10 +25,8 @@ function openid_client_init() {
 	$base = elgg_get_plugins_path() . 'openid_client/lib';
 	elgg_register_library('openid_client', "$base/helpers.php");
 
-	elgg_register_event_handler('create', 'user', 'openid_client_set_subtype', 1);
-
 	// don't let OpenID users set their passwords
-	elgg_register_event_handler('pagesetup', 'system', 'openid_client_remove_email');
+	elgg_register_event_handler('pagesetup', 'system', 'openid_client_remove_password');
 
 	// the return to page needs to be public
 	elgg_register_plugin_hook_handler('public_pages', 'walled_garden', 'openid_client_public');
@@ -37,11 +35,10 @@ function openid_client_init() {
 /**
  * Set the correct subtype for OpenID users
  *
- * @param string   $event  Event name
- * @param string   $type   Object type
- * @param ElggUser $user   New user
+ * @param ElggUser $user New user
+ * @return void
  */
-function openid_client_set_subtype($event, $type, $user) {
+function openid_client_set_subtype($user) {
 	$db_prefix = elgg_get_config('dbprefix');
 	$guid = (int)$user->getGUID();
 	$subtype_id = (int)add_subtype('user', 'openid');
@@ -71,7 +68,7 @@ function openid_client_setup_menu($hook, $type, $menu, $params) {
 			'wordpress' => 'toggle',
 		),
 	);
-	$items = elgg_trigger_plugin_hook('register', 'openid_login', null, $items);
+	$items = elgg_trigger_plugin_hook('register', 'openid_client:login', null, $items);
 
 	$priority = 100;
 	foreach ($items as $type => $providers) {
@@ -105,7 +102,7 @@ function openid_client_setup_menu($hook, $type, $menu, $params) {
 /**
  * Remove the password view from the account settings form
  */
-function openid_client_remove_email() {
+function openid_client_remove_password() {
 	$page_owner = elgg_get_page_owner_entity();
 	if ($page_owner && elgg_instanceof($page_owner, 'user', 'openid')) {
 		elgg_unextend_view('forms/account/settings', 'core/settings/account/password');
@@ -116,8 +113,8 @@ function openid_client_remove_email() {
  * Add pages to the list of public pages for walled garden needed for OpenID
  * transaction
  *
- * @param string $hook Hook name
- * @param string $type Hook type
+ * @param string $hook  Hook name
+ * @param string $type  Hook type
  * @param array  $pages Array of public pages
  * @return array
  */

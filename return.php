@@ -25,11 +25,10 @@ if (!$data || !$data['openid_identifier']) {
 }
 
 // does this user exist
-$users = elgg_get_entities_from_metadata(array(
+$users = elgg_get_entities_from_annotations(array(
 	'type' => 'user',
-	'subtype' => 'openid',
-	'metadata_name' => 'openid_identifier',
-	'metadata_value' => $data['openid_identifier'],
+	'annotation_name' => 'openid_identifier',
+	'annotation_value' => $data['openid_identifier'],
 ));
 if ($users) {
 	// log in user and maybe update account (admin setting, user prompt?)

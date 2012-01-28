@@ -19,8 +19,9 @@ try {
 	forward(REFERER);
 }
 $user = get_entity($guid);
+openid_client_set_subtype($user);
 
-$user->openid_identifier = $openid_identifier;
+$user->annotate('openid_identifier', $openid_identifier, ACCESS_PUBLIC);
 elgg_set_user_validation_status($guid, true, 'openid');
 
 if (!elgg_trigger_plugin_hook('register', 'user', array('user' => $user), true)) {
