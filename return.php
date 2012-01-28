@@ -24,16 +24,29 @@ if (!$data || !$data['openid_identifier']) {
 	forward();
 }
 
-// does this user exist
+// is there an account already associated with this openid
+$user = null;
 $users = elgg_get_entities_from_annotations(array(
 	'type' => 'user',
 	'annotation_name' => 'openid_identifier',
 	'annotation_value' => $data['openid_identifier'],
 ));
 if ($users) {
-	// log in user and maybe update account (admin setting, user prompt?)
+	// there should only be one account
 	$user = $users[0];
+} else {
+	$email = elgg_extract('email', $data);
+	if ($email) {
+		$users = get_user_by_email($email);
+		if (count($users) === 1) {
+			$user = $users[0];
+			$user->annotate('openid_identifier', $data['openid_identifier'], ACCESS_PUBLIC);
+		}
+	}
+}
 
+if ($user) {
+	// log in user and maybe update account (admin setting, user prompt?)
 	try {
 		login($user);
 	} catch (LoginException $e) {
