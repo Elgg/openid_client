@@ -23,6 +23,8 @@ $english = array(
 	'openid_client:warning:username_not_available' => 'The username %s is not available. Please pick another.',
 	'openid_client:warning:username_valid' => 'The username %s is not valid as this site. Please pick another.',
 	'openid_client:warning:email_not_available' => 'The email address %s is not available. Please pick another.',
+
+	'river:friend:user:openid' => "%s is now a friend with %s",
 );
 
 add_translation('en', $english);
